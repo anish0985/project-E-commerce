@@ -1,0 +1,1048 @@
+/* ===========================
+   PANDEY CART - Custom Styles
+   =========================== */
+
+* {
+    -webkit-tap-highlight-color: transparent;
+}
+
+html {
+    scroll-behavior: smooth;
+}
+
+body {
+    background-color: #05060a;
+    min-height: 100vh;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+/* ===========================
+   Glassmorphism Variants
+   =========================== */
+.glass-nav {
+    background: rgba(10, 11, 18, 0.6);
+    backdrop-filter: blur(20px) saturate(180%);
+    -webkit-backdrop-filter: blur(20px) saturate(180%);
+}
+
+.glass-card {
+    background: rgba(255, 255, 255, 0.03);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+/* Premium Glass - For badges/cards */
+.glass-premium {
+    background: rgba(255, 255, 255, 0.05);
+    backdrop-filter: blur(24px) saturate(180%);
+    -webkit-backdrop-filter: blur(24px) saturate(180%);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    box-shadow:
+        0 8px 32px rgba(0, 0, 0, 0.2),
+        inset 0 1px 0 rgba(255, 255, 255, 0.05);
+}
+
+.glass-card-premium {
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.08) 0%, rgba(255, 255, 255, 0.02) 100%);
+    backdrop-filter: blur(24px) saturate(180%);
+    -webkit-backdrop-filter: blur(24px) saturate(180%);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    box-shadow:
+        0 20px 40px -10px rgba(0, 0, 0, 0.4),
+        0 0 0 1px rgba(255, 255, 255, 0.03),
+        inset 0 1px 0 rgba(255, 255, 255, 0.08);
+}
+
+/* Navbar scrolled state */
+#navbar.scrolled .glass-nav {
+    background: rgba(5, 6, 10, 0.85);
+    border-bottom-color: rgba(255, 255, 255, 0.08);
+}
+
+/* ===========================
+   Floating Card Animations (Hero)
+   =========================== */
+.float-card-1 {
+    animation: floatCard1 7s ease-in-out infinite;
+}
+
+.float-card-2 {
+    animation: floatCard2 8s ease-in-out 1s infinite;
+}
+
+.float-card-3 {
+    animation: floatCard3 9s ease-in-out 2s infinite;
+}
+
+@keyframes floatCard1 {
+    0%, 100% { transform: translateY(0px) rotate(0deg); }
+    50% { transform: translateY(-15px) rotate(0.5deg); }
+}
+
+@keyframes floatCard2 {
+    0%, 100% { transform: translateY(0px) rotate(0deg); }
+    50% { transform: translateY(-18px) rotate(-0.5deg); }
+}
+
+@keyframes floatCard3 {
+    0%, 100% { transform: translateY(0px) rotate(0deg); }
+    50% { transform: translateY(-12px) rotate(0.3deg); }
+}
+
+/* ===========================
+   Category & Filter Pills
+   =========================== */
+.category-pill {
+    color: rgba(255, 255, 255, 0.6);
+    background: transparent;
+    border: 1px solid transparent;
+    cursor: pointer;
+}
+
+.category-pill:hover {
+    color: rgba(255, 255, 255, 0.95);
+    background: rgba(255, 255, 255, 0.05);
+}
+
+.category-pill.active {
+    color: white;
+    background: linear-gradient(135deg, rgba(251, 146, 60, 0.2), rgba(239, 68, 68, 0.2));
+    border-color: rgba(251, 146, 60, 0.3);
+    box-shadow: 0 4px 12px rgba(251, 146, 60, 0.15);
+}
+
+.category-pill-mobile.active {
+    color: white;
+    background: linear-gradient(135deg, rgba(251, 146, 60, 0.2), rgba(239, 68, 68, 0.2));
+    border: 1px solid rgba(251, 146, 60, 0.3);
+}
+
+.filter-pill {
+    background: rgba(255, 255, 255, 0.05);
+    color: rgba(255, 255, 255, 0.6);
+    border: 1px solid transparent;
+    cursor: pointer;
+}
+
+.filter-pill:hover {
+    background: rgba(255, 255, 255, 0.08);
+    color: white;
+}
+
+.filter-pill.active {
+    background: white;
+    color: #05060a;
+}
+
+/* ===========================
+   Product Card
+   =========================== */
+.product-card {
+    background: linear-gradient(180deg, rgba(255, 255, 255, 0.04) 0%, rgba(255, 255, 255, 0.01) 100%);
+    border: 1px solid rgba(255, 255, 255, 0.06);
+    border-radius: 1.25rem;
+    overflow: hidden;
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    position: relative;
+}
+
+.product-card::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: 1.25rem;
+    padding: 1px;
+    background: linear-gradient(135deg, transparent, rgba(251, 146, 60, 0.4), transparent);
+    -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+    -webkit-mask-composite: xor;
+    mask-composite: exclude;
+    opacity: 0;
+    transition: opacity 0.4s;
+    pointer-events: none;
+}
+
+.product-card:hover {
+    transform: translateY(-6px);
+    border-color: rgba(251, 146, 60, 0.3);
+    box-shadow: 0 20px 40px -10px rgba(251, 146, 60, 0.15);
+}
+
+.product-card:hover::before {
+    opacity: 1;
+}
+
+.product-image {
+    aspect-ratio: 1 / 1;
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.04), rgba(255, 255, 255, 0.01));
+    position: relative;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.product-image img {
+    width: 80%;
+    height: 80%;
+    object-fit: contain;
+    transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.product-card:hover .product-image img {
+    transform: scale(1.08);
+}
+
+.product-image .shimmer {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.04), transparent);
+    background-size: 200% 100%;
+    animation: shimmer 2.5s linear infinite;
+    pointer-events: none;
+}
+
+@keyframes shimmer {
+    0% { background-position: -200% 0; }
+    100% { background-position: 200% 0; }
+}
+
+/* ===========================
+   Wishlist Button (on cards)
+   =========================== */
+.wishlist-btn {
+    position: absolute;
+    top: 0.75rem;
+    right: 0.75rem;
+    width: 2.25rem;
+    height: 2.25rem;
+    background: rgba(10, 11, 18, 0.7);
+    backdrop-filter: blur(10px);
+    border-radius: 9999px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 5;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    transition: all 0.3s;
+    cursor: pointer;
+    color: rgba(255, 255, 255, 0.7);
+}
+
+.wishlist-btn:hover {
+    background: rgba(236, 72, 153, 0.2);
+    border-color: rgba(236, 72, 153, 0.4);
+    color: rgb(244, 114, 182);
+    transform: scale(1.1);
+}
+
+.wishlist-btn.active {
+    background: rgba(236, 72, 153, 0.2);
+    border-color: rgba(236, 72, 153, 0.5);
+    color: rgb(244, 114, 182);
+}
+
+.wishlist-btn.active svg {
+    fill: currentColor;
+}
+
+/* ===========================
+   Add to Cart Button
+   =========================== */
+.add-to-cart-btn {
+    background: linear-gradient(135deg, #f97316, #ef4444);
+    color: white;
+    padding: 0.625rem 1rem;
+    border-radius: 9999px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    transition: all 0.3s;
+    cursor: pointer;
+    border: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    box-shadow: 0 4px 12px rgba(249, 115, 22, 0.25);
+}
+
+.add-to-cart-btn:hover {
+    box-shadow: 0 8px 20px rgba(249, 115, 22, 0.4);
+    transform: translateY(-2px);
+}
+
+.add-to-cart-btn:active {
+    transform: translateY(0);
+}
+
+/* ===========================
+   Featured Category Cards
+   =========================== */
+.featured-cat-card {
+    background: linear-gradient(180deg, rgba(255, 255, 255, 0.04) 0%, rgba(255, 255, 255, 0.01) 100%);
+    border: 1px solid rgba(255, 255, 255, 0.06);
+    border-radius: 1.5rem;
+    padding: 1.5rem;
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    cursor: pointer;
+    position: relative;
+    overflow: hidden;
+    text-align: left;
+    width: 100%;
+}
+
+.featured-cat-card::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(circle at 50% 0%, rgba(251, 146, 60, 0.15), transparent 70%);
+    opacity: 0;
+    transition: opacity 0.4s;
+}
+
+.featured-cat-card:hover {
+    transform: translateY(-6px);
+    border-color: rgba(251, 146, 60, 0.3);
+    box-shadow: 0 20px 40px -10px rgba(251, 146, 60, 0.2);
+}
+
+.featured-cat-card:hover::before {
+    opacity: 1;
+}
+
+.featured-cat-card > * {
+    position: relative;
+}
+
+/* ===========================
+   Reveal on Scroll
+   =========================== */
+.reveal {
+    opacity: 0;
+    transform: translateY(40px);
+    transition: opacity 0.8s ease-out, transform 0.8s ease-out;
+}
+
+.reveal.visible {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+/* ===========================
+   Scrollbar
+   =========================== */
+.scrollbar-hide {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+}
+
+.scrollbar-hide::-webkit-scrollbar {
+    display: none;
+}
+
+#cartItems::-webkit-scrollbar,
+#wishlistItems::-webkit-scrollbar,
+#checkoutItems::-webkit-scrollbar {
+    width: 6px;
+}
+
+#cartItems::-webkit-scrollbar-track,
+#wishlistItems::-webkit-scrollbar-track,
+#checkoutItems::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+#cartItems::-webkit-scrollbar-thumb,
+#wishlistItems::-webkit-scrollbar-thumb,
+#checkoutItems::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 3px;
+}
+
+#cartItems::-webkit-scrollbar-thumb:hover,
+#wishlistItems::-webkit-scrollbar-thumb:hover,
+#checkoutItems::-webkit-scrollbar-thumb:hover {
+    background: rgba(255, 255, 255, 0.2);
+}
+
+/* ===========================
+   Cart Item
+   =========================== */
+.cart-item {
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(255, 255, 255, 0.06);
+    border-radius: 1rem;
+    padding: 1rem;
+    display: flex;
+    gap: 1rem;
+    transition: all 0.3s;
+}
+
+.cart-item:hover {
+    background: rgba(255, 255, 255, 0.05);
+    border-color: rgba(251, 146, 60, 0.2);
+}
+
+.cart-item-image {
+    width: 80px;
+    height: 80px;
+    border-radius: 0.75rem;
+    background: rgba(255, 255, 255, 0.04);
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+}
+
+.cart-item-image img {
+    width: 80%;
+    height: 80%;
+    object-fit: contain;
+}
+
+.qty-btn {
+    width: 1.75rem;
+    height: 1.75rem;
+    border-radius: 9999px;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.2s;
+    font-weight: 600;
+    font-size: 0.875rem;
+    user-select: none;
+}
+
+.qty-btn:hover {
+    background: rgba(251, 146, 60, 0.2);
+    border-color: rgba(251, 146, 60, 0.4);
+}
+
+.qty-btn:active {
+    transform: scale(0.95);
+}
+
+/* ===========================
+   Brand Logo
+   =========================== */
+.brand-logo {
+    font-family: 'Playfair Display', serif;
+    font-size: 2rem;
+    font-weight: 700;
+    color: rgba(255, 255, 255, 0.4);
+    padding: 0 2.5rem;
+    transition: color 0.3s;
+    white-space: nowrap;
+    letter-spacing: -0.02em;
+    user-select: none;
+}
+
+.brand-logo:hover {
+    color: rgba(255, 255, 255, 0.8);
+}
+
+.hero-brand-logo {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: rgba(255, 255, 255, 0.3);
+    padding: 0 2rem;
+    letter-spacing: 0.02em;
+    user-select: none;
+    transition: color 0.4s;
+}
+
+.hero-brand-logo:hover {
+    color: rgba(255, 255, 255, 0.6);
+}
+
+/* ===========================
+   Review Card
+   =========================== */
+.review-card {
+    background: linear-gradient(180deg, rgba(255, 255, 255, 0.04) 0%, rgba(255, 255, 255, 0.01) 100%);
+    border: 1px solid rgba(255, 255, 255, 0.06);
+    border-radius: 1.5rem;
+    padding: 1.75rem;
+    transition: all 0.4s;
+}
+
+.review-card:hover {
+    border-color: rgba(251, 146, 60, 0.3);
+    transform: translateY(-4px);
+}
+
+/* ===========================
+   Deal Card
+   =========================== */
+.deal-card {
+    background: linear-gradient(135deg, rgba(251, 146, 60, 0.08), rgba(239, 68, 68, 0.04));
+    border: 1px solid rgba(251, 146, 60, 0.2);
+    border-radius: 1.5rem;
+    padding: 1.5rem;
+    transition: all 0.4s;
+    position: relative;
+    overflow: hidden;
+}
+
+.deal-card::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    right: -50%;
+    width: 100%;
+    height: 100%;
+    background: radial-gradient(circle, rgba(251, 146, 60, 0.15), transparent 70%);
+    pointer-events: none;
+}
+
+.deal-card:hover {
+    border-color: rgba(251, 146, 60, 0.4);
+    transform: translateY(-4px);
+    box-shadow: 0 20px 40px -10px rgba(251, 146, 60, 0.2);
+}
+
+.deal-card > * {
+    position: relative;
+}
+
+/* ===========================
+   Avatar
+   =========================== */
+.avatar {
+    width: 40px;
+    height: 40px;
+    border-radius: 9999px;
+    background: linear-gradient(135deg, #f97316, #ef4444);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    color: white;
+    font-size: 0.875rem;
+    flex-shrink: 0;
+}
+
+/* ===========================
+   Toast
+   =========================== */
+#toast.show {
+    transform: translateY(0);
+    opacity: 1;
+}
+
+/* ===========================
+   Scroll to Top
+   =========================== */
+#scrollTopBtn.show {
+    opacity: 1;
+    pointer-events: auto;
+}
+
+/* ===========================
+   Focus States
+   =========================== */
+button:focus-visible,
+input:focus-visible,
+a:focus-visible {
+    outline: 2px solid rgba(251, 146, 60, 0.6);
+    outline-offset: 2px;
+    border-radius: 4px;
+}
+
+input:focus-visible {
+    border-radius: 0.75rem;
+}
+
+/* ===========================
+   Selection
+   =========================== */
+::selection {
+    background: rgba(251, 146, 60, 0.4);
+    color: white;
+}
+
+/* ===========================
+   Utilities
+   =========================== */
+.line-clamp-2 {
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
+.line-clamp-1 {
+    display: -webkit-box;
+    -webkit-line-clamp: 1;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
+.perspective-1000 {
+    perspective: 1000px;
+}
+
+body.no-scroll {
+    overflow: hidden;
+}
+
+/* ===========================
+   OTP Input Styling
+   =========================== */
+.otp-input {
+    color: white;
+    caret-color: #fb923c;
+    transition: all 0.2s ease;
+}
+
+.otp-input:focus {
+    transform: scale(1.05);
+    box-shadow: 0 0 0 3px rgba(251, 146, 60, 0.2);
+}
+
+.otp-input::-webkit-outer-spin-button,
+.otp-input::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+
+.otp-input[type="number"] {
+    -moz-appearance: textfield;
+}
+
+/* ===========================
+   Payment Option Radio
+   =========================== */
+.payment-option {
+    transition: all 0.3s ease;
+    position: relative;
+}
+
+.payment-option:has(input:checked) {
+    border-color: rgba(251, 146, 60, 0.5);
+    background: linear-gradient(135deg, rgba(251, 146, 60, 0.08), rgba(239, 68, 68, 0.05));
+    box-shadow: 0 0 0 1px rgba(251, 146, 60, 0.3), 0 8px 20px -8px rgba(251, 146, 60, 0.3);
+}
+
+.payment-option input[type="radio"] {
+    accent-color: #fb923c;
+    cursor: pointer;
+}
+
+.payment-option input[type="radio"]:checked + div {
+    color: #fb923c;
+}
+
+/* ===========================
+   Coupon Suggestion Buttons
+   =========================== */
+.coupon-suggest {
+    transition: all 0.2s ease;
+    cursor: pointer;
+}
+
+.coupon-suggest:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(251, 146, 60, 0.2);
+}
+
+.coupon-suggest:active {
+    transform: translateY(0);
+}
+
+/* ===========================
+   Tracking Progress Bar
+   =========================== */
+#trackingProgress {
+    transition: height 1.5s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* ===========================
+   QR Code Styling
+   =========================== */
+#qrCode svg {
+    display: block;
+    width: 100% !important;
+    height: 100% !important;
+    max-width: 100%;
+}
+
+#qrCode svg rect,
+#qrCode svg path {
+    fill: #05060a !important;
+}
+
+#qrCode svg .white,
+#qrCode svg rect[fill="white"] {
+    fill: #ffffff !important;
+}
+
+/* ===========================
+   Success Page Animations
+   =========================== */
+@keyframes successCheck {
+    0% { stroke-dashoffset: 100; }
+    100% { stroke-dashoffset: 0; }
+}
+
+@keyframes successCircle {
+    0% { transform: scale(0); opacity: 0; }
+    50% { transform: scale(1.1); opacity: 1; }
+    100% { transform: scale(1); opacity: 1; }
+}
+
+@keyframes pulseRing {
+    0% { transform: scale(0.8); opacity: 1; }
+    100% { transform: scale(2.5); opacity: 0; }
+}
+
+.animate-success-circle {
+    animation: successCircle 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+.animate-pulse-ring {
+    animation: pulseRing 1.5s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+.animate-success-check {
+    stroke-dasharray: 100;
+    stroke-dashoffset: 100;
+    animation: successCheck 0.8s cubic-bezier(0.16, 1, 0.3, 1) 0.3s forwards;
+}
+
+/* ===========================
+   Auth Modal Specific
+   =========================== */
+#authModal .glass-card-premium {
+    animation: scaleIn 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+#authModal [id$="View"] {
+    animation: fadeIn 0.4s ease-out;
+}
+
+#loginView, #otpView, #registerView, #forgotView {
+    position: relative;
+}
+
+/* ===========================
+   Account Dashboard
+   =========================== */
+.account-tab {
+    transition: all 0.2s ease;
+    color: rgba(255, 255, 255, 0.7);
+}
+
+.account-tab:hover {
+    color: white;
+}
+
+.account-tab.bg-white\/5 {
+    color: white;
+    font-weight: 600;
+}
+
+.account-content {
+    animation: fadeIn 0.3s ease-out;
+}
+
+/* ===========================
+   Checkout Page
+   =========================== */
+#checkoutPage {
+    animation: fadeIn 0.3s ease-out;
+}
+
+#shippingForm input,
+#shippingForm textarea {
+    transition: all 0.2s ease;
+}
+
+#shippingForm input:focus,
+#shippingForm textarea:focus {
+    transform: translateY(-1px);
+}
+
+/* ===========================
+   Tracking Page
+   =========================== */
+#trackingSteps > div {
+    animation: slideInUp 0.5s cubic-bezier(0.16, 1, 0.3, 1) backwards;
+}
+
+#trackingSteps > div:nth-child(1) { animation-delay: 0.1s; }
+#trackingSteps > div:nth-child(2) { animation-delay: 0.2s; }
+#trackingSteps > div:nth-child(3) { animation-delay: 0.3s; }
+#trackingSteps > div:nth-child(4) { animation-delay: 0.4s; }
+#trackingSteps > div:nth-child(5) { animation-delay: 0.5s; }
+
+@keyframes slideInUp {
+    0% { opacity: 0; transform: translateY(20px); }
+    100% { opacity: 1; transform: translateY(0); }
+}
+
+/* ===========================
+   UPI Modal
+   =========================== */
+#upiModal {
+    animation: fadeIn 0.3s ease-out;
+}
+
+#upiModal .glass-card-premium {
+    animation: scaleIn 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* ===========================
+   Success Page
+   =========================== */
+#successPage {
+    animation: fadeIn 0.4s ease-out;
+}
+
+#successPage .glass-card-premium {
+    animation: scaleIn 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* ===========================
+   Video Styling
+   =========================== */
+video {
+    display: block;
+}
+
+video::-webkit-media-controls {
+    display: none !important;
+}
+
+/* ===========================
+   Smooth Hero Adjustments
+   =========================== */
+@media (max-width: 1023px) {
+    .float-card-1, .float-card-2, .float-card-3 {
+        animation-duration: 6s;
+    }
+    
+    #checkoutPage .sticky {
+        position: relative;
+        top: 0;
+    }
+}
+
+/* ===========================
+   Responsive Typography
+   =========================== */
+@media (max-width: 640px) {
+    .brand-logo {
+        font-size: 1.5rem;
+        padding: 0 1.5rem;
+    }
+    .hero-brand-logo {
+        font-size: 1.25rem;
+        padding: 0 1.25rem;
+    }
+}
+
+/* ===========================
+   Reduced Motion
+   =========================== */
+@media (prefers-reduced-motion: reduce) {
+    .float-card-1, .float-card-2, .float-card-3,
+    .animate-marquee, .animate-marquee-slow,
+    .animate-float, .animate-float-slow,
+    .animate-gradient-x, .animate-pulse,
+    .animate-bounce, .animate-ping,
+    .animate-pulse-ring, .animate-success-circle,
+    .animate-success-check {
+        animation: none !important;
+    }
+}
+
+/* ===========================
+   Print Styles
+   =========================== */
+@media print {
+    .glass-nav, #navbar, footer, .no-print {
+        display: none !important;
+    }
+}
+
+/* ===========================
+   Custom Keyframes (used in JS animations)
+   =========================== */
+@keyframes fadeIn {
+    0% { opacity: 0; }
+    100% { opacity: 1; }
+}
+
+@keyframes scaleIn {
+    0% { opacity: 0; transform: scale(0.9); }
+    100% { opacity: 1; transform: scale(1); }
+}
+
+/* ===========================
+   Form Elements Enhancement
+   =========================== */
+input[type="text"],
+input[type="email"],
+input[type="tel"],
+input[type="password"],
+input[type="number"],
+textarea {
+    font-family: inherit;
+}
+
+input::placeholder,
+textarea::placeholder {
+    color: rgba(255, 255, 255, 0.3);
+}
+
+input:-webkit-autofill,
+input:-webkit-autofill:hover,
+input:-webkit-autofill:focus {
+    -webkit-text-fill-color: white;
+    -webkit-box-shadow: 0 0 0 1000px rgba(255, 255, 255, 0.05) inset;
+    transition: background-color 5000s ease-in-out 0s;
+}
+
+/* ===========================
+   Loading States
+   =========================== */
+.loading {
+    position: relative;
+    pointer-events: none;
+    opacity: 0.7;
+}
+
+.loading::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+    background-size: 200% 100%;
+    animation: shimmer 1.5s linear infinite;
+}
+
+/* ===========================
+   Badge Pulse
+   =========================== */
+@keyframes badgePulse {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.05); }
+}
+
+.badge-pulse {
+    animation: badgePulse 2s ease-in-out infinite;
+}
+
+/* ===========================
+   Hover Lift Utility
+   =========================== */
+.hover-lift {
+    transition: transform 0.3s, box-shadow 0.3s;
+}
+
+.hover-lift:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 12px 24px -8px rgba(0, 0, 0, 0.3);
+}
+
+/* ===========================
+   Glass Border Highlight
+   =========================== */
+.glass-border-highlight {
+    position: relative;
+}
+
+.glass-border-highlight::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    padding: 1px;
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.2), transparent, rgba(251, 146, 60, 0.2));
+    -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+    -webkit-mask-composite: xor;
+    mask-composite: exclude;
+    pointer-events: none;
+}
+
+/* ===========================
+   Smooth Image Loading
+   =========================== */
+img {
+    transition: opacity 0.3s ease;
+}
+
+img:not([src]),
+img[src=""] {
+    opacity: 0;
+}
+
+/* ===========================
+   Custom Checkbox/Radio
+   =========================== */
+input[type="radio"]:checked::before {
+    content: '';
+    display: block;
+    width: 0.5rem;
+    height: 0.5rem;
+    border-radius: 9999px;
+    background: #fb923c;
+    margin: 0.125rem;
+}
+
+/* ===========================
+   Backdrop Blur Support Check
+   =========================== */
+@supports not (backdrop-filter: blur(10px)) {
+    .glass-nav,
+    .glass-card,
+    .glass-premium,
+    .glass-card-premium {
+        background: rgba(10, 11, 18, 0.95);
+    }
+}
+
+
+/* ============================================================
+   🔧 FINAL FIX — Zero blank space between hero and product grid
+   (Add these rules at the very end of style.css)
+   ============================================================ */
+
+/* 1. Clamp the hero to exactly 100vh so it physically cannot
+      overflow into the next section. */
+#home {
+    max-height: 100vh !important;
+    overflow: hidden !important;
+}
+
+/* 2. Make the inner content wrapper fill exactly 100% of the
+      hero so justify-center distributes space properly. */
+#home > .relative.z-10 {
+    max-height: 100% !important;
+    min-height: 0 !important;
+}
+
+/* 3. Remove any 1-pixel seam between the hero and the first
+      product section caused by sub-pixel rounding. */
+#featured {
+    margin-top: -1px !important;
+    padding-top: 0 !important;
+}
+
+/* 4. On mobile use the small viewport height (excludes the
+      browser's address bar) so the hero fits the visible screen. */
+@media (max-width: 768px) {
+    #home {
+        max-height: 100svh !important;
+    }
+}
+
