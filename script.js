@@ -404,6 +404,9 @@ const coupons = {
 // ===========================
 let cart = JSON.parse(localStorage.getItem('pandeycart_cart') || '[]');
 let wishlist = JSON.parse(localStorage.getItem('pandeycart_wishlist') || '[]');
+let compareList = JSON.parse(localStorage.getItem('pandeycart_compare') || '[]');
+let recentlyViewed = JSON.parse(localStorage.getItem('pandeycart_recently_viewed') || '[]');
+let customReviews = JSON.parse(localStorage.getItem('pandeycart_custom_reviews') || '{}');
 let user = JSON.parse(localStorage.getItem('pandeycart_user') || 'null');
 let orders = JSON.parse(localStorage.getItem('pandeycart_orders') || '[]');
 let addresses = JSON.parse(localStorage.getItem('pandeycart_addresses') || '[]');
@@ -413,6 +416,8 @@ let searchCategory = 'all';
 let currentOtp = null;
 let pendingMobile = '';
 let appliedCoupon = null;
+let currentQvProduct = null;
+let selectedStarRating = 5;
 let checkoutData = { subtotal: 0, discount: 0, couponDiscount: 0, gst: 0, total: 0 };
 let orderProgressTimers = {};
 
@@ -437,6 +442,9 @@ const saveState = () => {
     localStorage.setItem('pandeycart_user', JSON.stringify(user));
     localStorage.setItem('pandeycart_orders', JSON.stringify(orders));
     localStorage.setItem('pandeycart_addresses', JSON.stringify(addresses));
+    localStorage.setItem('pandeycart_compare', JSON.stringify(compareList));
+    localStorage.setItem('pandeycart_recently_viewed', JSON.stringify(recentlyViewed));
+    localStorage.setItem('pandeycart_custom_reviews', JSON.stringify(customReviews));
 };
 
 const generateOrderId = () => '#PC' + Date.now().toString().slice(-8);
@@ -1141,21 +1149,30 @@ const initTracking = () => {
 // ===========================
 const createProductCard = (product) => {
     const inWishlist = wishlist.includes(product.id);
+    const inCompare = compareList.includes(product.id);
     const discount = product.originalPrice ? calcDiscount(product.originalPrice, product.price) : 0;
     const fallbackImg = "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyMDAgMjAwIj48cmVjdCB3aWR0aD0iMjAwIiBoZWlnaHQ9IjIwMCIgZmlsbD0iIzFhMWIyZSIvPjx0ZXh0IHg9IjUwJSIgeT0iNTAlIiBkb21pbmFudC1iYXNlbGluZT0iY2VudHJhbCIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZmlsbD0iIzU1NTY3NyIgZm9udC1mYW1pbHk9InNhbnMtc2VyaWYiIGZvbnQtc2l6ZT0iMTQiPkltYWdlPC90ZXh0Pjwvc3ZnPg==";
     
     return `
-        <div class="product-card group" data-id="${product.id}" data-category="${product.category}">
-            <div class="product-image relative">
+        <div class="product-card group relative" data-id="${product.id}" data-category="${product.category}">
+            <div class="product-image relative cursor-pointer" data-quick-view="${product.id}">
                 <div class="shimmer"></div>
                 <img src="${product.image}" alt="${product.name}" loading="lazy" onerror="this.src='${fallbackImg}'"/>
                 <div class="absolute top-3 left-3 flex flex-col gap-1.5 z-10">
                     ${product.badge ? `<span class="px-2.5 py-1 text-[10px] font-bold uppercase tracking-wider rounded-full bg-gradient-to-r from-saffron-500 to-red-500 text-white shadow-lg">${product.badge}</span>` : ''}
                     ${discount > 0 ? `<span class="px-2.5 py-1 text-[10px] font-bold uppercase tracking-wider rounded-full bg-green-600 text-white shadow-lg">${discount}% OFF</span>` : ''}
                 </div>
-                <button class="wishlist-btn ${inWishlist ? 'active' : ''}" data-wishlist="${product.id}" aria-label="Add to wishlist">
-                    <svg class="w-4 h-4" fill="${inWishlist ? 'currentColor' : 'none'}" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"/></svg>
-                </button>
+                <div class="absolute top-3 right-3 flex flex-col gap-1.5 z-10">
+                    <button class="wishlist-btn ${inWishlist ? 'active' : ''}" data-wishlist="${product.id}" aria-label="Add to wishlist">
+                        <svg class="w-4 h-4" fill="${inWishlist ? 'currentColor' : 'none'}" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"/></svg>
+                    </button>
+                    <button class="wishlist-btn ${inCompare ? 'active border-saffron-500 text-saffron-400' : ''}" data-toggle-compare="${product.id}" title="Compare item">
+                        ⚔️
+                    </button>
+                </div>
+                <div class="absolute inset-0 bg-ink-900/40 backdrop-blur-xs opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center pointer-events-none">
+                    <span class="px-3 py-1.5 glass-card rounded-full text-xs font-semibold text-white shadow-lg border border-white/20 transform translate-y-2 group-hover:translate-y-0 transition-transform">🔍 Quick View</span>
+                </div>
             </div>
             <div class="p-4 space-y-2">
                 <div class="flex items-center justify-between text-xs">
@@ -1165,7 +1182,7 @@ const createProductCard = (product) => {
                         <span class="text-white/60">${product.rating}</span>
                     </div>
                 </div>
-                <h3 class="font-semibold text-sm line-clamp-2 leading-snug min-h-[2.5em]">${product.name}</h3>
+                <h3 class="font-semibold text-sm line-clamp-2 leading-snug min-h-[2.5em] cursor-pointer hover:text-saffron-400 transition" data-quick-view="${product.id}">${product.name}</h3>
                 <p class="text-xs text-white/50 line-clamp-2">${product.description}</p>
                 <div class="flex items-end justify-between pt-2">
                     <div>
@@ -1492,6 +1509,566 @@ const updateCounts = () => {
 };
 
 // ===========================
+// QUICK VIEW FEATURE
+// ===========================
+const openQuickView = (productId) => {
+    const product = products.find(p => p.id === productId);
+    if (!product) return;
+
+    currentQvProduct = product;
+
+    // Record in Recently Viewed
+    recentlyViewed = [productId, ...recentlyViewed.filter(id => id !== productId)].slice(0, 8);
+    saveState();
+    renderRecentlyViewed();
+
+    // Populate Modal Data
+    const setText = (id, txt) => { const el = $(id); if (el) el.textContent = txt; };
+    setText('#qvTitle', product.name);
+    setText('#qvBrand', product.brand);
+    setText('#qvCategory', product.category);
+    setText('#qvPrice', formatPrice(product.price));
+    setText('#qvOriginalPrice', product.originalPrice ? formatPrice(product.mrp || product.originalPrice) : '');
+    setText('#qvDiscount', product.originalPrice ? `${calcDiscount(product.originalPrice, product.price)}% OFF` : '');
+    setText('#qvDescription', product.description || 'Experience cutting-edge performance with premium craftsmanship.');
+    setText('#qvRating', product.rating);
+    setText('#qvReviews', `${product.reviews || 120} reviews`);
+    setText('#qvSpecBrand', product.brand);
+
+    const img = $('#qvMainImage');
+    if (img) img.src = product.image;
+
+    const badge = $('#qvBadge');
+    if (badge) {
+        if (product.badge) { badge.textContent = product.badge; badge.classList.remove('hidden'); }
+        else badge.classList.add('hidden');
+    }
+
+    // Set buttons dataset
+    const addCartBtn = $('#qvAddToCartBtn');
+    if (addCartBtn) addCartBtn.dataset.addCart = product.id;
+
+    const addCompareBtn = $('#qvAddToCompareBtn');
+    if (addCompareBtn) {
+        addCompareBtn.dataset.toggleCompare = product.id;
+        addCompareBtn.classList.toggle('border-saffron-500', compareList.includes(product.id));
+        addCompareBtn.classList.toggle('text-saffron-400', compareList.includes(product.id));
+    }
+
+    const qvWishlistBtn = $('#qvWishlistBtn');
+    if (qvWishlistBtn) {
+        qvWishlistBtn.dataset.wishlist = product.id;
+        const inWish = wishlist.includes(product.id);
+        qvWishlistBtn.classList.toggle('text-pink-400', inWish);
+        qvWishlistBtn.classList.toggle('border-pink-500', inWish);
+    }
+
+    // Reset Pincode output
+    const pinRes = $('#qvPincodeResult');
+    if (pinRes) pinRes.classList.add('hidden');
+
+    renderQvReviews(product.id);
+
+    $('#quickViewModal')?.classList.remove('hidden');
+    document.body.classList.add('no-scroll');
+};
+
+const renderQvReviews = (productId) => {
+    const list = $('#qvReviewsList');
+    if (!list) return;
+
+    const saved = customReviews[productId] || [];
+    const defaults = [
+        { author: 'Verified Buyer', rating: 5, text: 'Absolutely outstanding quality! Express shipping was smooth.' },
+        { author: 'Ankit M.', rating: 5, text: 'Top tier build and worth every rupee.' }
+    ];
+
+    const allRev = [...saved, ...defaults];
+    list.innerHTML = allRev.map(r => `
+        <div class="glass-card p-2.5 rounded-lg border border-white/5 space-y-1">
+            <div class="flex items-center justify-between text-[11px]">
+                <span class="font-semibold text-white/90">${r.author}</span>
+                <span class="text-yellow-400">★ ${r.rating}.0</span>
+            </div>
+            <p class="text-[11px] text-white/60 leading-tight">${r.text}</p>
+        </div>
+    `).join('');
+};
+
+const initQuickView = () => {
+    $('#qvClose')?.addEventListener('click', () => {
+        $('#quickViewModal')?.classList.add('hidden');
+        document.body.classList.remove('no-scroll');
+    });
+
+    $('#qvBackdrop')?.addEventListener('click', () => {
+        $('#quickViewModal')?.classList.add('hidden');
+        document.body.classList.remove('no-scroll');
+    });
+
+    // Pincode Checker
+    $('#qvCheckPincodeBtn')?.addEventListener('click', () => {
+        const input = $('#qvPincodeInput')?.value.trim();
+        const res = $('#qvPincodeResult');
+        if (!res) return;
+
+        if (!input || input.length !== 6 || !/^\d{6}$/.test(input)) {
+            res.className = 'text-xs mt-2 text-red-400';
+            res.textContent = '❌ Please enter a valid 6-digit pincode';
+            res.classList.remove('hidden');
+            return;
+        }
+
+        const date = new Date();
+        date.setDate(date.getDate() + 2);
+        const dayStr = date.toLocaleDateString('en-IN', { weekday: 'short', month: 'short', day: 'numeric' });
+
+        res.className = 'text-xs mt-2 text-green-400 font-medium';
+        res.innerHTML = `✓ Delivery available to <strong>${input}</strong> by <strong>${dayStr}</strong> (Free Pan-India Express)`;
+        res.classList.remove('hidden');
+    });
+
+    // Tabs
+    $$('.qv-tab').forEach(tab => {
+        tab.addEventListener('click', () => {
+            $$('.qv-tab').forEach(t => t.classList.remove('active'));
+            tab.classList.add('active');
+
+            const target = tab.dataset.qvTab;
+            if (target === 'specs') {
+                $('#qvTabSpecs')?.classList.remove('hidden');
+                $('#qvTabReviews')?.classList.add('hidden');
+            } else {
+                $('#qvTabSpecs')?.classList.add('hidden');
+                $('#qvTabReviews')?.classList.remove('hidden');
+            }
+        });
+    });
+
+    // Review Star Rating Selection
+    const starInput = $('#reviewStarRating');
+    if (starInput) {
+        starInput.addEventListener('click', (e) => {
+            const starSpan = e.target.closest('[data-star]');
+            if (!starSpan) return;
+            selectedStarRating = parseInt(starSpan.dataset.star);
+            $$('#reviewStarRating span').forEach((s, idx) => {
+                s.classList.toggle('text-yellow-400', idx < selectedStarRating);
+                s.classList.toggle('text-white/30', idx >= selectedStarRating);
+            });
+        });
+    }
+
+    // Submit Review
+    $('#submitReviewBtn')?.addEventListener('click', () => {
+        if (!currentQvProduct) return;
+        const author = $('#reviewAuthor')?.value.trim() || 'Anonymous Customer';
+        const text = $('#reviewText')?.value.trim();
+
+        if (!text) {
+            showToast('Please write your review feedback');
+            return;
+        }
+
+        if (!customReviews[currentQvProduct.id]) customReviews[currentQvProduct.id] = [];
+        customReviews[currentQvProduct.id].unshift({ author, rating: selectedStarRating, text });
+        saveState();
+
+        renderQvReviews(currentQvProduct.id);
+        if ($('#reviewAuthor')) $('#reviewAuthor').value = '';
+        if ($('#reviewText')) $('#reviewText').value = '';
+        showToast('Thank you for your review! ⭐');
+    });
+};
+
+// ===========================
+// COMPARE FEATURE
+// ===========================
+const toggleCompare = (productId) => {
+    const idx = compareList.indexOf(productId);
+    if (idx > -1) {
+        compareList.splice(idx, 1);
+        showToast('Removed from comparison');
+    } else {
+        if (compareList.length >= 4) {
+            showToast('Comparison limit reached (Max 4 products)');
+            return;
+        }
+        compareList.push(productId);
+        const product = products.find(p => p.id === productId);
+        if (product) showToast(`Added ${product.name.substring(0, 20)}... to compare`);
+    }
+    saveState();
+    renderCompareDock();
+    renderAll();
+};
+
+const renderCompareDock = () => {
+    const bar = $('#compareBar');
+    const countEl = $('#compareCount');
+    const thumbsEl = $('#compareThumbnails');
+    if (!bar) return;
+
+    if (countEl) countEl.textContent = compareList.length;
+
+    if (compareList.length === 0) {
+        bar.classList.add('translate-y-full');
+        return;
+    }
+
+    bar.classList.remove('translate-y-full');
+
+    if (thumbsEl) {
+        thumbsEl.innerHTML = compareList.map(id => {
+            const p = products.find(pr => pr.id === id);
+            if (!p) return '';
+            return `
+                <div class="relative group shrink-0">
+                    <img src="${p.image}" class="w-10 h-10 rounded-lg object-contain bg-white/10 p-1 border border-white/20" />
+                    <button class="absolute -top-1.5 -right-1.5 w-4 h-4 bg-red-500 text-white rounded-full text-[10px] flex items-center justify-center opacity-0 group-hover:opacity-100 transition" data-toggle-compare="${p.id}">✕</button>
+                </div>
+            `;
+        }).join('');
+    }
+};
+
+const openCompareModal = () => {
+    if (compareList.length === 0) {
+        showToast('Select products to compare first');
+        return;
+    }
+
+    const table = $('#compareTable');
+    if (!table) return;
+
+    const comparedProducts = compareList.map(id => products.find(p => p.id === id)).filter(Boolean);
+
+    table.innerHTML = `
+        <thead>
+            <tr class="border-b border-white/10">
+                <th class="p-4 w-40 text-xs uppercase tracking-wider text-white/40">Feature</th>
+                ${comparedProducts.map(p => `
+                    <th class="p-4 text-center min-w-[180px]">
+                        <div class="relative w-24 h-24 mx-auto mb-3 bg-white/5 rounded-2xl p-2 flex items-center justify-center">
+                            <img src="${p.image}" class="w-full h-full object-contain" />
+                            <button class="absolute top-1 right-1 text-xs text-white/50 hover:text-red-400 p-1" data-toggle-compare="${p.id}">✕</button>
+                        </div>
+                        <div class="font-bold text-sm text-white line-clamp-2">${p.name}</div>
+                        <div class="text-xs text-saffron-400 font-bold mt-1">${formatPrice(p.price)}</div>
+                    </th>
+                `).join('')}
+            </tr>
+        </thead>
+        <tbody class="divide-y divide-white/5 text-xs">
+            <tr>
+                <td class="p-4 font-semibold text-white/60">Brand</td>
+                ${comparedProducts.map(p => `<td class="p-4 text-center text-white font-medium">${p.brand}</td>`).join('')}
+            </tr>
+            <tr>
+                <td class="p-4 font-semibold text-white/60">Rating</td>
+                ${comparedProducts.map(p => `<td class="p-4 text-center text-yellow-400 font-bold">★ ${p.rating}</td>`).join('')}
+            </tr>
+            <tr>
+                <td class="p-4 font-semibold text-white/60">Category</td>
+                ${comparedProducts.map(p => `<td class="p-4 text-center text-white/80 capitalize">${p.category}</td>`).join('')}
+            </tr>
+            <tr>
+                <td class="p-4 font-semibold text-white/60">Warranty</td>
+                ${comparedProducts.map(() => `<td class="p-4 text-center text-white/80">1 Year Official</td>`).join('')}
+            </tr>
+            <tr>
+                <td class="p-4 font-semibold text-white/60">Pan-India Express</td>
+                ${comparedProducts.map(() => `<td class="p-4 text-center text-green-400 font-semibold">✓ Supported</td>`).join('')}
+            </tr>
+            <tr>
+                <td class="p-4 font-semibold text-white/60">Action</td>
+                ${comparedProducts.map(p => `
+                    <td class="p-4 text-center">
+                        <button class="w-full py-2 bg-gradient-to-r from-saffron-500 to-red-500 text-white font-semibold text-xs rounded-xl shadow" data-add-cart="${p.id}">Add to Cart</button>
+                    </td>
+                `).join('')}
+            </tr>
+        </tbody>
+    `;
+
+    $('#compareModal')?.classList.remove('hidden');
+    document.body.classList.add('no-scroll');
+};
+
+const initCompare = () => {
+    $('#openCompareModalBtn')?.addEventListener('click', openCompareModal);
+    $('#clearCompareBtn')?.addEventListener('click', () => {
+        compareList = [];
+        saveState();
+        renderCompareDock();
+        renderAll();
+        showToast('Comparison list cleared');
+    });
+
+    $('#compareClose')?.addEventListener('click', () => {
+        $('#compareModal')?.classList.add('hidden');
+        document.body.classList.remove('no-scroll');
+    });
+
+    $('#compareBackdrop')?.addEventListener('click', () => {
+        $('#compareModal')?.classList.add('hidden');
+        document.body.classList.remove('no-scroll');
+    });
+
+    renderCompareDock();
+};
+
+// ===========================
+// RECENTLY VIEWED FEATURE
+// ===========================
+const renderRecentlyViewed = () => {
+    const sec = $('#recentlyViewedSection');
+    const grid = $('#recentlyViewedGrid');
+    if (!sec || !grid) return;
+
+    if (recentlyViewed.length === 0) {
+        sec.classList.add('hidden');
+        return;
+    }
+
+    const items = recentlyViewed.map(id => products.find(p => p.id === id)).filter(Boolean);
+    if (items.length === 0) {
+        sec.classList.add('hidden');
+        return;
+    }
+
+    sec.classList.remove('hidden');
+    grid.innerHTML = items.map(p => `
+        <div class="glass-card p-3 rounded-2xl group cursor-pointer hover:border-saffron-500/30 transition" data-quick-view="${p.id}">
+            <div class="aspect-square rounded-xl bg-white/5 mb-2 overflow-hidden flex items-center justify-center p-2">
+                <img src="${p.image}" class="w-full h-full object-contain group-hover:scale-105 transition" />
+            </div>
+            <div class="text-[10px] text-white/40 uppercase font-semibold">${p.brand}</div>
+            <h4 class="text-xs font-semibold text-white line-clamp-1 group-hover:text-saffron-400 transition">${p.name}</h4>
+            <div class="text-xs font-bold text-saffron-400 mt-1">${formatPrice(p.price)}</div>
+        </div>
+    `).join('');
+};
+
+const initRecentlyViewed = () => {
+    $('#clearRecentlyViewedBtn')?.addEventListener('click', () => {
+        recentlyViewed = [];
+        saveState();
+        renderRecentlyViewed();
+        showToast('Browsing history cleared');
+    });
+
+    renderRecentlyViewed();
+};
+
+// ===========================
+// AI SHOPPING ASSISTANT FEATURE
+// ===========================
+const sendAiMessage = (userText) => {
+    const text = userText.trim();
+    if (!text) return;
+
+    const chatInput = $('#aiChatInput');
+    const messagesContainer = $('#aiChatMessages');
+    if (chatInput) chatInput.value = '';
+
+    // Render User Message
+    renderAiChatMessage('user', text);
+
+    // Render Typing Indicator
+    const typingId = 'typing-' + Date.now();
+    const typingHtml = `
+        <div id="${typingId}" class="flex items-start gap-2.5 ai-chat-bubble">
+            <div class="w-7 h-7 rounded-lg bg-saffron-500/20 text-saffron-400 flex items-center justify-center shrink-0">🤖</div>
+            <div class="glass-card p-3 rounded-2xl rounded-tl-none border border-white/10 flex items-center gap-1.5">
+                <span class="w-1.5 h-1.5 bg-saffron-400 rounded-full typing-dot"></span>
+                <span class="w-1.5 h-1.5 bg-saffron-400 rounded-full typing-dot"></span>
+                <span class="w-1.5 h-1.5 bg-saffron-400 rounded-full typing-dot"></span>
+            </div>
+        </div>
+    `;
+    if (messagesContainer) {
+        messagesContainer.insertAdjacentHTML('beforeend', typingHtml);
+        messagesContainer.scrollTop = messagesContainer.scrollHeight;
+    }
+
+    // Generate AI Response after brief realistic delay
+    setTimeout(() => {
+        $(`#${typingId}`)?.remove();
+        const response = generateAiResponse(text);
+        renderAiChatMessage('bot', response.text, response.products);
+    }, 400);
+};
+
+const initAiAssistant = () => {
+    const toggleBtn = $('#aiChatToggle');
+    const chatWidget = $('#aiChatWidget');
+    const chatClose = $('#aiChatClose');
+    const chatForm = $('#aiChatForm');
+
+    if (!toggleBtn || !chatWidget) return;
+
+    toggleBtn.addEventListener('click', () => {
+        chatWidget.classList.toggle('hidden');
+        if (!chatWidget.classList.contains('hidden')) {
+            const input = $('#aiChatInput');
+            if (input) setTimeout(() => input.focus(), 100);
+        }
+    });
+
+    if (chatClose) {
+        chatClose.addEventListener('click', () => chatWidget.classList.add('hidden'));
+    }
+
+    // Quick Chips Event
+    document.addEventListener('click', (e) => {
+        const chip = e.target.closest('[data-ai-query]');
+        if (chip) {
+            e.preventDefault();
+            e.stopPropagation();
+            const query = chip.dataset.aiQuery;
+            if (query) sendAiMessage(query);
+        }
+    });
+
+    // Chat Form Submission
+    if (chatForm) {
+        chatForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            const input = $('#aiChatInput');
+            if (input && input.value) {
+                sendAiMessage(input.value);
+            }
+        });
+    }
+};
+
+const renderAiChatMessage = (sender, text, productMatches = []) => {
+    const container = $('#aiChatMessages');
+    if (!container) return;
+
+    if (sender === 'user') {
+        const userHtml = `
+            <div class="flex items-start gap-2.5 justify-end ai-chat-bubble">
+                <div class="bg-gradient-to-r from-saffron-500 to-red-500 p-3 rounded-2xl rounded-tr-none text-white max-w-[85%]">
+                    <p class="leading-relaxed text-xs">${escapeHtml(text)}</p>
+                </div>
+            </div>
+        `;
+        container.insertAdjacentHTML('beforeend', userHtml);
+    } else {
+        let productCardsHtml = '';
+        if (productMatches && productMatches.length > 0) {
+            productCardsHtml = `
+                <div class="space-y-2 pt-2">
+                    ${productMatches.map(p => `
+                        <div class="glass-card p-2 rounded-xl flex items-center gap-2 border border-white/10 hover:border-saffron-500/30 transition">
+                            <img src="${p.image}" class="w-10 h-10 rounded-lg object-contain bg-black/20" onerror="this.style.display='none'" />
+                            <div class="flex-1 min-w-0">
+                                <div class="font-semibold text-white truncate text-[11px]">${p.name}</div>
+                                <div class="text-saffron-400 font-bold text-[11px]">${formatPrice(p.price)}</div>
+                            </div>
+                            <button class="px-2.5 py-1 bg-saffron-500 hover:bg-saffron-600 text-white rounded-lg text-[10px] font-bold transition shrink-0" data-quick-view="${p.id}">View</button>
+                        </div>
+                    `).join('')}
+                </div>
+            `;
+        }
+
+        const botHtml = `
+            <div class="flex items-start gap-2.5 ai-chat-bubble">
+                <div class="w-7 h-7 rounded-lg bg-saffron-500/20 text-saffron-400 flex items-center justify-center shrink-0">🤖</div>
+                <div class="glass-card p-3 rounded-2xl rounded-tl-none border border-white/10 max-w-[85%] space-y-2 text-xs">
+                    <div class="text-white/90 leading-relaxed">${text}</div>
+                    ${productCardsHtml}
+                </div>
+            </div>
+        `;
+        container.insertAdjacentHTML('beforeend', botHtml);
+    }
+    container.scrollTop = container.scrollHeight;
+};
+
+const escapeHtml = (str) => {
+    return str.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+};
+
+const generateAiResponse = (query) => {
+    const q = query.toLowerCase().trim();
+
+    // 1. Coupon / Offer queries
+    if (q.includes('coupon') || q.includes('discount') || q.includes('offer') || q.includes('code') || q.includes('promo')) {
+        return {
+            text: "🎉 Here are the best active coupon codes for instant savings:<br/><br/>• <strong class='text-saffron-400'>PANDEY20</strong> — 20% OFF on all luxury tech<br/>• <strong class='text-saffron-400'>FIRST1500</strong> — ₹1,500 FLAT OFF on orders above ₹5,000<br/>• <strong class='text-saffron-400'>WELCOME10</strong> — 10% OFF Welcome Bonus!",
+            products: []
+        };
+    }
+
+    // 2. Order Tracking queries
+    if (q.includes('order') || q.includes('track') || q.includes('status') || q.includes('delivery')) {
+        if (orders && orders.length > 0) {
+            const latest = orders[orders.length - 1];
+            return {
+                text: `📦 Your latest order <strong class='text-saffron-400'>${latest.id}</strong> status is: <strong>${latest.currentStage || 'Order Placed'}</strong>.<br/>Total: ${formatPrice(latest.total)}`,
+                products: []
+            };
+        }
+        return {
+            text: "📦 You don't have any active orders currently. Place an order or click the profile icon to log into your account!",
+            products: []
+        };
+    }
+
+    // 3. Price & Budget Parsing
+    let maxPrice = null;
+    const lakhMatch = q.match(/(\d+(?:\.\d+)?)\s*lakh/i);
+    if (lakhMatch) {
+        maxPrice = parseFloat(lakhMatch[1]) * 100000;
+    } else {
+        const numMatch = q.match(/(?:under|below|less than|\<)\s*₹?\s*(\d+)/i) || q.match(/₹?\s*(\d{4,6})/);
+        if (numMatch) {
+            maxPrice = parseInt(numMatch[1]);
+        }
+    }
+
+    // 4. Category & Product matching
+    let matchingProducts = products;
+
+    if (q.includes('laptop') || q.includes('macbook') || q.includes('computer') || q.includes('razer')) {
+        matchingProducts = matchingProducts.filter(p => p.category === 'laptops');
+    } else if (q.includes('headphone') || q.includes('audio') || q.includes('earbud') || q.includes('airpod') || q.includes('noise') || q.includes('sound') || q.includes('bose') || q.includes('sony')) {
+        matchingProducts = matchingProducts.filter(p => p.category === 'audio');
+    } else if (q.includes('watch') || q.includes('wearable') || q.includes('fit')) {
+        matchingProducts = matchingProducts.filter(p => p.category === 'wearables');
+    } else if (q.includes('camera') || q.includes('photo') || q.includes('gopro') || q.includes('canon')) {
+        matchingProducts = matchingProducts.filter(p => p.category === 'cameras');
+    } else if (q.includes('game') || q.includes('gaming') || q.includes('ps5') || q.includes('playstation') || q.includes('xbox') || q.includes('console')) {
+        matchingProducts = matchingProducts.filter(p => p.category === 'gaming');
+    } else if (q.includes('phone') || q.includes('iphone') || q.includes('galaxy') || q.includes('s24') || q.includes('mobile')) {
+        matchingProducts = matchingProducts.filter(p => p.category === 'electronics');
+    }
+
+    if (maxPrice !== null && !isNaN(maxPrice)) {
+        matchingProducts = matchingProducts.filter(p => p.price <= maxPrice);
+    }
+
+    if (matchingProducts.length > 0) {
+        const topMatches = matchingProducts.slice(0, 3);
+        const priceTag = maxPrice ? ` under ${formatPrice(maxPrice)}` : '';
+        return {
+            text: `✨ I found <strong>${matchingProducts.length} premium option${matchingProducts.length > 1 ? 's' : ''}</strong>${priceTag} for you:`,
+            products: topMatches
+        };
+    }
+
+    // Fallback best sellers
+    return {
+        text: "⚡ Here are some of our top-rated luxury bestsellers recommendations:",
+        products: products.filter(p => p.bestseller).slice(0, 3)
+    };
+};
+
+// ===========================
 // Search Functionality
 // ===========================
 const handleSearch = (query) => {
@@ -1648,6 +2225,22 @@ const initEventListeners = () => {
     
     // Event Delegation for product actions
     document.addEventListener('click', (e) => {
+        const qvBtn = e.target.closest('[data-quick-view]');
+        if (qvBtn) {
+            e.preventDefault();
+            e.stopPropagation();
+            openQuickView(parseInt(qvBtn.dataset.quickView));
+            return;
+        }
+
+        const compBtn = e.target.closest('[data-toggle-compare]');
+        if (compBtn) {
+            e.preventDefault();
+            e.stopPropagation();
+            toggleCompare(parseInt(compBtn.dataset.toggleCompare));
+            return;
+        }
+
         const addBtn = e.target.closest('[data-add-cart]');
         if (addBtn) { e.preventDefault(); e.stopPropagation(); addToCart(parseInt(addBtn.dataset.addCart)); return; }
         
@@ -1726,7 +2319,7 @@ const initEventListeners = () => {
     // Escape key closes modals
     document.addEventListener('keydown', (e) => {
         if (e.key === 'Escape') {
-            ['authModal', 'accountDashboard', 'checkoutPage', 'upiModal', 'successPage', 'trackingPage', 'cartDrawer', 'wishlistDrawer'].forEach(id => {
+            ['authModal', 'accountDashboard', 'checkoutPage', 'upiModal', 'successPage', 'trackingPage', 'cartDrawer', 'wishlistDrawer', 'quickViewModal', 'compareModal'].forEach(id => {
                 $(`#${id}`)?.classList.add('hidden');
             });
             document.body.classList.remove('no-scroll');
@@ -1772,6 +2365,10 @@ document.addEventListener('DOMContentLoaded', () => {
     initUpi();
     initSuccess();
     initTracking();
+    initQuickView();
+    initCompare();
+    initRecentlyViewed();
+    initAiAssistant();
     initEventListeners();
     updateAccountUI();
 });

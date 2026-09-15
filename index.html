@@ -428,9 +428,24 @@
     <section class="py-20 lg:py-32 bg-ink-800/30">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8"><h2 class="text-4xl sm:text-5xl font-display font-bold tracking-tight text-center mb-12">Best Sellers</h2><div id="bestSellers" class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 lg:gap-6"></div></div>
     </section>
-    <section class="py-20 lg:py-32">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8"><h2 class="text-4xl sm:text-5xl font-display font-bold tracking-tight text-center mb-12">Deals of the Day</h2><div id="dealsOfTheDay" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"></div></div>
+    <section id="dealsOfTheDay" class="py-20 lg:py-32">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8"><h2 class="text-4xl sm:text-5xl font-display font-bold tracking-tight text-center mb-12">Deals of the Day</h2><div id="dealsOfTheDayGrid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"></div></div>
     </section>
+
+    <!-- RECENTLY VIEWED SECTION -->
+    <section id="recentlyViewedSection" class="py-16 bg-ink-800/30 border-t border-white/5 hidden">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between mb-8">
+                <div class="flex items-center gap-3">
+                    <span class="text-2xl">🕒</span>
+                    <h2 class="text-2xl sm:text-3xl font-display font-bold">Recently Viewed</h2>
+                </div>
+                <button id="clearRecentlyViewedBtn" class="text-xs text-white/40 hover:text-saffron-400 transition">Clear History</button>
+            </div>
+            <div id="recentlyViewedGrid" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4"></div>
+        </div>
+    </section>
+
     <footer class="border-t border-white/5 bg-ink-800/50 backdrop-blur-xl py-12">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
             <span class="text-2xl font-display font-bold">PANDEY CART</span>
@@ -464,11 +479,204 @@
         </div>
     </div>
 
+    <!-- QUICK VIEW MODAL -->
+    <div id="quickViewModal" class="fixed inset-0 z-[95] hidden">
+        <div class="absolute inset-0 bg-ink-900/85 backdrop-blur-xl" id="qvBackdrop"></div>
+        <div class="absolute inset-0 flex items-center justify-center p-4 overflow-y-auto">
+            <div class="relative w-full max-w-4xl my-8 glass-card-premium rounded-3xl p-6 sm:p-8 shadow-2xl border border-white/10 overflow-hidden">
+                <button id="qvClose" class="absolute top-4 right-4 z-10 p-2 hover:bg-white/10 rounded-full transition">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+                </button>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                    <!-- Gallery -->
+                    <div class="space-y-4">
+                        <div class="relative aspect-square rounded-2xl overflow-hidden glass-card border border-white/10 flex items-center justify-center bg-black/20">
+                            <img id="qvMainImage" src="" alt="" class="w-full h-full object-cover transition-all duration-300" />
+                            <span id="qvBadge" class="absolute top-4 left-4 px-3 py-1 bg-saffron-500 text-white text-xs font-bold rounded-full uppercase tracking-wider shadow-lg">New</span>
+                        </div>
+                    </div>
+                    <!-- Product Info -->
+                    <div class="flex flex-col justify-between space-y-6">
+                        <div>
+                            <div class="flex items-center gap-2 text-xs font-semibold uppercase tracking-wider text-saffron-400 mb-1">
+                                <span id="qvBrand">Brand</span> • <span id="qvCategory">Category</span>
+                            </div>
+                            <h2 id="qvTitle" class="text-2xl sm:text-3xl font-display font-bold text-white mb-2">Product Name</h2>
+                            <div class="flex items-center gap-3 mb-4">
+                                <div class="flex items-center text-yellow-400 text-sm">
+                                    <span id="qvStars">★★★★★</span>
+                                    <span id="qvRating" class="ml-1.5 font-bold text-white text-xs">4.9</span>
+                                </div>
+                                <span class="text-white/30 text-xs">•</span>
+                                <span id="qvReviews" class="text-xs text-white/60">120 reviews</span>
+                            </div>
+                            <div class="flex items-baseline gap-3 mb-4">
+                                <span id="qvPrice" class="text-3xl font-display font-bold text-saffron-400">₹0</span>
+                                <span id="qvOriginalPrice" class="text-lg text-white/40 line-through">₹0</span>
+                                <span id="qvDiscount" class="text-xs font-bold text-green-400 bg-green-500/10 px-2 py-1 rounded-md">0% OFF</span>
+                            </div>
+                            <p id="qvDescription" class="text-sm text-white/70 leading-relaxed mb-6">Product description goes here.</p>
+
+                            <!-- Pincode Checker -->
+                            <div class="glass-card rounded-2xl p-4 border border-white/10 mb-6">
+                                <div class="text-xs font-semibold text-white/60 uppercase tracking-wider mb-2 flex items-center gap-1.5">
+                                    <span>🚚</span> Check Delivery & Express Availability
+                                </div>
+                                <div class="flex gap-2">
+                                    <input type="text" id="qvPincodeInput" maxlength="6" placeholder="Enter 6-digit Pincode (e.g. 110001)" class="flex-1 bg-white/5 border border-white/10 rounded-xl px-3 py-2 text-xs focus:outline-none focus:border-saffron-500" />
+                                    <button id="qvCheckPincodeBtn" class="px-4 py-2 bg-saffron-500/20 hover:bg-saffron-500/30 border border-saffron-500/40 text-saffron-300 font-semibold text-xs rounded-xl transition">Check</button>
+                                </div>
+                                <div id="qvPincodeResult" class="text-xs mt-2 hidden"></div>
+                            </div>
+                        </div>
+
+                        <!-- Interactive Tabs: Specs & Customer Reviews -->
+                        <div class="border-t border-white/10 pt-4">
+                            <div class="flex border-b border-white/10 gap-6 mb-4">
+                                <button class="qv-tab active text-sm font-semibold pb-2" data-qv-tab="specs">Specifications</button>
+                                <button class="qv-tab text-sm font-semibold pb-2" data-qv-tab="reviews">Reviews & Ratings</button>
+                            </div>
+                            <div id="qvTabSpecs" class="qv-tab-content space-y-2 text-xs text-white/70">
+                                <div class="flex justify-between py-1 border-b border-white/5"><span class="text-white/40">Brand</span><span id="qvSpecBrand" class="font-semibold text-white">Apple</span></div>
+                                <div class="flex justify-between py-1 border-b border-white/5"><span class="text-white/40">Warranty</span><span class="font-semibold text-white">1 Year Official Manufacturer</span></div>
+                                <div class="flex justify-between py-1 border-b border-white/5"><span class="text-white/40">Return Policy</span><span class="font-semibold text-white">7 Days Replacement Guarantee</span></div>
+                                <div class="flex justify-between py-1 border-b border-white/5"><span class="text-white/40">Express Shipping</span><span class="font-semibold text-green-400">Available</span></div>
+                            </div>
+                            <div id="qvTabReviews" class="qv-tab-content hidden space-y-4 max-h-48 overflow-y-auto pr-1">
+                                <!-- Review Submission -->
+                                <div class="glass-card p-3 rounded-xl border border-white/10 space-y-2">
+                                    <div class="text-xs font-semibold text-saffron-400">Write a Review</div>
+                                    <div class="flex items-center gap-1 text-yellow-400 text-lg star-rating-input" id="reviewStarRating">
+                                        <span data-star="1">★</span><span data-star="2">★</span><span data-star="3">★</span><span data-star="4">★</span><span data-star="5" class="text-white/30">★</span>
+                                    </div>
+                                    <input type="text" id="reviewAuthor" placeholder="Your Name" class="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-1.5 text-xs text-white focus:outline-none focus:border-saffron-500" />
+                                    <textarea id="reviewText" rows="2" placeholder="Write your feedback..." class="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-1.5 text-xs text-white focus:outline-none focus:border-saffron-500 resize-none"></textarea>
+                                    <button id="submitReviewBtn" class="px-4 py-1.5 bg-gradient-to-r from-saffron-500 to-red-500 text-white text-xs font-semibold rounded-lg shadow">Submit Review</button>
+                                </div>
+                                <div id="qvReviewsList" class="space-y-2"></div>
+                            </div>
+                        </div>
+
+                        <!-- Actions -->
+                        <div class="flex items-center gap-3 pt-2">
+                            <button id="qvAddToCartBtn" class="flex-1 py-3.5 bg-gradient-to-r from-saffron-500 to-red-500 hover:from-saffron-600 hover:to-red-600 rounded-xl font-semibold text-sm transition shadow-lg shadow-saffron-500/30 flex items-center justify-center gap-2">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"/></svg> Add to Cart
+                            </button>
+                            <button id="qvAddToCompareBtn" class="p-3.5 glass-card border border-white/15 hover:border-saffron-500/50 rounded-xl transition text-white/80 hover:text-saffron-400" title="Compare Product">
+                                ⚔️
+                            </button>
+                            <button id="qvWishlistBtn" class="p-3.5 glass-card border border-white/15 hover:border-pink-500/50 rounded-xl transition text-white/80 hover:text-pink-400" title="Add to Wishlist">
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"/></svg>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- PRODUCT COMPARE DOCK (FLOATING BAR) -->
+    <div id="compareBar" class="fixed bottom-0 inset-x-0 z-[60] bg-ink-800/95 border-t border-white/15 backdrop-blur-xl py-3 px-4 transform translate-y-full transition-transform duration-300 compare-dock">
+        <div class="max-w-7xl mx-auto flex items-center justify-between gap-4">
+            <div class="flex items-center gap-3">
+                <span class="text-xl">⚔️</span>
+                <div>
+                    <div class="text-sm font-bold text-white">Product Compare (<span id="compareCount">0</span>/4)</div>
+                    <div class="text-xs text-white/50 hidden sm:block">Select up to 4 items to compare side by side</div>
+                </div>
+            </div>
+            <div id="compareThumbnails" class="flex items-center gap-2 overflow-x-auto"></div>
+            <div class="flex items-center gap-2">
+                <button id="openCompareModalBtn" class="px-5 py-2.5 bg-gradient-to-r from-saffron-500 to-red-500 text-white font-semibold text-xs sm:text-sm rounded-xl shadow-lg shadow-saffron-500/30 whitespace-nowrap">Compare Now</button>
+                <button id="clearCompareBtn" class="p-2 text-white/40 hover:text-white transition text-xs">Clear</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- COMPARE MODAL -->
+    <div id="compareModal" class="fixed inset-0 z-[95] hidden">
+        <div class="absolute inset-0 bg-ink-900/90 backdrop-blur-xl" id="compareBackdrop"></div>
+        <div class="absolute inset-0 flex items-center justify-center p-4 overflow-y-auto">
+            <div class="relative w-full max-w-6xl my-8 glass-card-premium rounded-3xl p-6 sm:p-8 shadow-2xl border border-white/10">
+                <button id="compareClose" class="absolute top-4 right-4 p-2 hover:bg-white/10 rounded-full transition">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+                </button>
+                <div class="mb-6">
+                    <h2 class="text-3xl font-display font-bold">Product Comparison</h2>
+                    <p class="text-sm text-white/60">Compare key specs, ratings, and pricing side-by-side</p>
+                </div>
+                <div class="overflow-x-auto">
+                    <table class="w-full text-left border-collapse" id="compareTable">
+                        <!-- Dynamically populated -->
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- AI SHOPPING ASSISTANT WIDGET ("PANDEY AI") -->
+    <div id="aiChatContainer" class="fixed bottom-6 right-6 z-[65]">
+        <!-- Toggle Floating Button -->
+        <button id="aiChatToggle" class="group relative w-14 h-14 rounded-full bg-gradient-to-br from-saffron-500 via-orange-500 to-red-500 p-0.5 shadow-2xl shadow-saffron-500/40 hover:scale-110 transition-transform duration-300 flex items-center justify-center" aria-label="Toggle Pandey AI Assistant">
+            <span class="absolute -top-1 -right-1 w-3.5 h-3.5 bg-green-500 rounded-full border-2 border-ink-900 animate-pulse"></span>
+            <div class="w-full h-full rounded-full bg-ink-900/40 backdrop-blur-md flex items-center justify-center">
+                <span class="text-2xl group-hover:rotate-12 transition-transform">🤖</span>
+            </div>
+        </button>
+
+        <!-- Chat Popup Box -->
+        <div id="aiChatWidget" class="hidden absolute bottom-20 right-0 w-[90vw] sm:w-96 glass-card-premium rounded-3xl shadow-2xl border border-white/15 overflow-hidden flex flex-col h-[480px] animate-slide-in-up z-50">
+            <!-- Header -->
+            <div class="p-4 bg-gradient-to-r from-saffron-600/30 to-red-600/30 border-b border-white/10 flex items-center justify-between shrink-0">
+                <div class="flex items-center gap-3">
+                    <div class="w-9 h-9 rounded-xl bg-gradient-to-br from-saffron-500 to-red-500 flex items-center justify-center text-lg shadow-md">🤖</div>
+                    <div>
+                        <h4 class="font-display font-bold text-sm text-white">Pandey AI Assistant</h4>
+                        <div class="flex items-center gap-1.5 text-[10px] text-green-400">
+                            <span class="w-1.5 h-1.5 rounded-full bg-green-400 animate-ping"></span> Live Shopping Concierge
+                        </div>
+                    </div>
+                </div>
+                <button id="aiChatClose" class="p-1.5 hover:bg-white/10 rounded-full transition text-white/70 hover:text-white" aria-label="Close Assistant">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+                </button>
+            </div>
+
+            <!-- Messages Area -->
+            <div id="aiChatMessages" class="flex-1 p-4 overflow-y-auto space-y-3 text-xs">
+                <!-- Welcome Message -->
+                <div class="flex items-start gap-2.5 ai-chat-bubble">
+                    <div class="w-7 h-7 rounded-lg bg-saffron-500/20 text-saffron-400 flex items-center justify-center shrink-0">🤖</div>
+                    <div class="glass-card p-3 rounded-2xl rounded-tl-none border border-white/10 max-w-[85%] space-y-2">
+                        <p class="text-white/90 leading-relaxed">Hello! 👋 I'm **Pandey AI**, your personal luxury shopping assistant. How can I help you today?</p>
+                        <div class="flex flex-wrap gap-1.5 pt-1" id="aiQuickChips">
+                            <button class="ai-chip px-2.5 py-1 rounded-full text-[10px] text-white/70" data-ai-query="Laptops under 1 Lakh">💻 Laptops under ₹1L</button>
+                            <button class="ai-chip px-2.5 py-1 rounded-full text-[10px] text-white/70" data-ai-query="Best noise cancelling headphones">🎧 Best Headphones</button>
+                            <button class="ai-chip px-2.5 py-1 rounded-full text-[10px] text-white/70" data-ai-query="Available discount coupons">🏷️ Coupons</button>
+                            <button class="ai-chip px-2.5 py-1 rounded-full text-[10px] text-white/70" data-ai-query="Track my order">📦 Order Status</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Input Bar -->
+            <div class="p-3 border-t border-white/10 bg-ink-900/60 shrink-0">
+                <form id="aiChatForm" class="flex items-center gap-2">
+                    <input type="text" id="aiChatInput" placeholder="Ask about products, budget, or orders..." class="flex-1 bg-white/5 border border-white/10 rounded-xl px-3 py-2 text-xs text-white placeholder-white/40 focus:outline-none focus:border-saffron-500" />
+                    <button type="submit" class="p-2.5 bg-gradient-to-r from-saffron-500 to-red-500 hover:from-saffron-600 hover:to-red-600 rounded-xl text-white transition shadow-md shadow-saffron-500/20">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"/></svg>
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+
     <div id="toast" class="fixed bottom-6 right-6 z-[80] transform translate-y-24 opacity-0 transition-all duration-300 pointer-events-none"><div class="glass-card-premium px-5 py-3 rounded-2xl flex items-center gap-3 shadow-2xl"><p id="toastMessage" class="text-sm font-medium">Item added to cart</p></div></div>
 
     <script src="https://cdn.jsdelivr.net/npm/qrcode-generator@1.4.4/qrcode.min.js"></script>
     <script src="script.js"></script>
 </body>
 </html>
+
 
 
